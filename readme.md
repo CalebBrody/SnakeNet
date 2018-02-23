@@ -5,19 +5,23 @@ SnakeLearn.py trains an AI from scratch.  Note that the AI is not given any inst
 SnakeNet saves a highlight reel of each snake generation as a gif.
 
 Generation 1
+
 ![Gen 1.gif](Generation1.gif)
 
 Generation 2
+
 ![Gen 2.gif](Generation2.gif)
 
 Generation 3
+
 ![Gen 3.gif](Generation3.gif)
 
 Generation 4
+
 ![Gen 4.gif](Generation4.gif)
 
-usage: python SnakeLearn.py [-h] [-m M] [-i l] [-t H] [-G N] [-rG R] [-g G] [-H H]
-                     [-z Z]
+usage: python SnakeLearn.py [-h] [-m M] [-i l] [-t H] [-G N] [-rG R] [-g G] [-H H] [-z Z]
+
 optional arguments:
   -h, --help            show this help message and exit
   -m M, --Map Size M    Width of the playable map
