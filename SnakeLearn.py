@@ -55,7 +55,7 @@ def Positive_Integer(value):
 		raise argparse.ArgumentTypeError("%s is an invalid value" % value)
 	return int(value)
 
-parser = argparse.ArgumentParser(description='Trains an AI to play the popular ATARI game snake from scratch.  Note that the AI is not given any instructions about the rules of the game prior to play.  If the AI attempts and illegal move (going backwards, walking out of bounds, ect.) this is treated as a death.  Use command line options to adjust the settings and observe changes in snake performance.  Outputs highlight reel of each snake generation to gif.')
+parser = argparse.ArgumentParser(description='Trains an AI to play the popular ATARI game snake from scratch.  Note that the AI is not given any instructions about the rules of the game prior to play.  If the AI attempts an illegal move (going backwards, walking out of bounds, ect.) this is treated as a death.  Use command line options to adjust the settings and observe changes in snake performance.  Outputs highlight reel of each snake generation to gif.')
 parser.add_argument('-m', '--Map Size',  metavar='M', dest='MapSize',default=8, help='Width of the playable map', type=Positive_Integer)
 parser.add_argument('-i', '--Iterations',  metavar='l', dest='loops',default=3, help='Number of times model is trained per genration', type=Positive_Integer) 
 parser.add_argument('-t', '--Hunger',  metavar='H',   dest='Hunger',default=50, help='Maximum number of turns snake can go without eating and not die', type=Positive_Integer) 
