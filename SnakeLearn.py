@@ -1,3 +1,4 @@
+from __future__ import print_function
 #Code to play the game snake and write a gif
 #Writen by Caleb Brody
 #Inspired by University of Texas at Austin paper
