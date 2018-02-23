@@ -30,18 +30,12 @@ optional arguments:
   
   -i l, --Iterations l  Number of times model is trained per genration
   
-  -t H, --Hunger H      Maximum number of turns snake can go without eating
+  -t H, --Hunger H      Maximum number of turns snake can go without eating and not die
   
-                        and not die
-  
-  -G N, --Games N       Number of games played per genration by a skilled
-  
-                        snake
+  -G N, --Games N       Number of games played per genration by a skilled snake
   
   -rG R, --Random Games R
-                        Number of games played per genration by an unskilled
-  
-                        snake
+                        Number of games played per genration by an unskilled snake
   
   -g G, --Generations G
                         Number of generations to train
