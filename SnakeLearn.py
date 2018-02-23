@@ -31,7 +31,29 @@ def GetBestAftermath(Q, FutureState):
 x,y,FutureState=[],[],[]
 MostImportantStates = [[],[],[]]
 hunger = 99999
-def PlayGames(brain, games, silent=False, save=False, hunger=99999, TurnMax=400):
+
+def Positive_Integer(value):
+	if not (int(value)==float(value) and int(value)>0):
+		raise argparse.ArgumentTypeError("%s is an invalid value" % value)
+	return int(value)
+
+parser = argparse.ArgumentParser(description='Trains an AI to play the popular ATARI game snake from scratch.  Note that the AI is not given any instructions about the rules of the game prior to play.  If the AI attempts an illegal move (going backwards, walking out of bounds, ect.) this is treated as a death.  Use command line options to adjust the settings and observe changes in snake performance.  Outputs highlight reel of each snake generation to gif.')
+parser.add_argument('-m', '--Map Size',  metavar='M', dest='MapSize',default=8, help='Width of the playable map', type=Positive_Integer)
+parser.add_argument('-i', '--Iterations',  metavar='l', dest='loops',default=3, help='Number of times model is trained per genration', type=Positive_Integer) 
+parser.add_argument('-t', '--Hunger',  metavar='H',   dest='Hunger',default=50, help='Maximum number of turns snake can go without eating and not die', type=Positive_Integer) 
+parser.add_argument('-T', '--MaxTurns',  metavar='T',   dest='TurnMax',default=400, help='Maximum number of turns per game', type=Positive_Integer) 
+parser.add_argument('-G', '--Games',  metavar='N',    dest='Games',default=210, help='Number of games played per genration by a skilled snake', type=Positive_Integer) 
+parser.add_argument('-rG', '--Random Games',  metavar='R', dest='rGames',default=100, help='Number of games played per genration by an unskilled snake', type=Positive_Integer) 
+parser.add_argument('-g', '--Generations',  metavar='G',   dest='Generations',default=7, help='Number of generations to train', type=Positive_Integer) 
+parser.add_argument('-H', '--Highlights',  metavar='H',    dest='Highlight',default=1, help='Number of games to put in the highlight Reel', type=Positive_Integer) 
+parser.add_argument('-z', '--Gifsize',  metavar='Z',       dest='Size',default=600, help='Approximate width of highlight Reel gif in pixels', type=Positive_Integer)  
+
+print ()
+args = parser.parse_args()
+parser.print_help()
+print ()
+
+def PlayGames(brain, games, silent=False, save=False, hunger=99999, TurnMax=args.TurnMax):
 	global x,y,FutureState, MostImportantStates
 	apples=[]
 	turns=[]
@@ -44,32 +66,13 @@ def PlayGames(brain, games, silent=False, save=False, hunger=99999, TurnMax=400)
 		x+=StateLog[:-1]
 		y+=RewardLog
 		FutureState+=StateLog[1:]
-	"""ImportantStates=np.array(y)!=0
-	MostImportantStates[0]+=x[ImportantStates]
-	MostImportantStates[1]+=y[ImportantStates]
-	MostImportantStates[2]+=FutureState[ImportantStates]"""
+	ImportantStates=np.array(y)!=0
+	MostImportantStates[0]+=np.array(x)[ImportantStates].tolist()
+	MostImportantStates[1]+=np.array(y)[ImportantStates].tolist()
+	MostImportantStates[2]+=np.array(FutureState)[ImportantStates].tolist()
 	if not silent: print ("Observed", len(y),"states, on average lived", np.mean( turns), "turns, ate", np.mean( apples), "times.") 
 	return 	apples, turns, gifs
 
-def Positive_Integer(value):
-	if not (int(value)==float(value) and int(value)>0):
-		raise argparse.ArgumentTypeError("%s is an invalid value" % value)
-	return int(value)
-
-parser = argparse.ArgumentParser(description='Trains an AI to play the popular ATARI game snake from scratch.  Note that the AI is not given any instructions about the rules of the game prior to play.  If the AI attempts an illegal move (going backwards, walking out of bounds, ect.) this is treated as a death.  Use command line options to adjust the settings and observe changes in snake performance.  Outputs highlight reel of each snake generation to gif.')
-parser.add_argument('-m', '--Map Size',  metavar='M', dest='MapSize',default=8, help='Width of the playable map', type=Positive_Integer)
-parser.add_argument('-i', '--Iterations',  metavar='l', dest='loops',default=3, help='Number of times model is trained per genration', type=Positive_Integer) 
-parser.add_argument('-t', '--Hunger',  metavar='H',   dest='Hunger',default=50, help='Maximum number of turns snake can go without eating and not die', type=Positive_Integer) 
-parser.add_argument('-G', '--Games',  metavar='N',    dest='Games',default=210, help='Number of games played per genration by a skilled snake', type=Positive_Integer) 
-parser.add_argument('-rG', '--Random Games',  metavar='R', dest='rGames',default=100, help='Number of games played per genration by an unskilled snake', type=Positive_Integer) 
-parser.add_argument('-g', '--Generations',  metavar='G',   dest='Generations',default=7, help='Number of generations to train', type=Positive_Integer) 
-parser.add_argument('-H', '--Highlights',  metavar='H',    dest='Highlight',default=1, help='Number of games to put in the highlight Reel', type=Positive_Integer) 
-parser.add_argument('-z', '--Gifsize',  metavar='Z',       dest='Size',default=600, help='Approximate width of highlight Reel gif in pixels', type=Positive_Integer)  
-
-print ()
-args = parser.parse_args()
-parser.print_help()
-print ()
 
 SnakeGame.MapSize=args.MapSize
 Px_Size=         int(600/args.MapSize)
@@ -96,8 +99,8 @@ def MakeDecision(state):
 	return Decision
 	
 for Generation in range(args.Generations):
-#	x,y,FutureState=MostImportantStates
-#	MostImportantStates = [[],[],[]]
+	x,y,FutureState=MostImportantStates
+	MostImportantStates = [[],[],[]]
 	print ()
 	print ( "     Generation", Generation+1) 
 	PlayGames(lambda state: np.random.randint(3), args.rGames, silent=True) 
