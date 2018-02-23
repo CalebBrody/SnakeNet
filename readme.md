@@ -20,4 +20,4 @@ Generation 4
 
 ![Gen 4.gif](Generation4.gif)
 
-usage: python SnakeLearn.py
+Usage: python SnakeLearn.py
