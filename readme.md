@@ -23,17 +23,29 @@ Generation 4
 usage: python SnakeLearn.py [-h] [-m M] [-i l] [-t H] [-G N] [-rG R] [-g G] [-H H] [-z Z]
 
 optional arguments:
+
   -h, --help            show this help message and exit
+  
   -m M, --Map Size M    Width of the playable map
+  
   -i l, --Iterations l  Number of times model is trained per genration
+  
   -t H, --Hunger H      Maximum number of turns snake can go without eating
+  
                         and not die
+  
   -G N, --Games N       Number of games played per genration by a skilled
+  
                         snake
+  
   -rG R, --Random Games R
                         Number of games played per genration by an unskilled
+  
                         snake
+  
   -g G, --Generations G
                         Number of generations to train
+  
   -H H, --Highlights H  Number of games to put in the highlight Reel
+
   -z Z, --Gifsize Z     Approximate width of highlight Reel gif in pixels
