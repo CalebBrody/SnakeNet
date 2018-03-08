@@ -12,6 +12,7 @@ from sklearn import ensemble
 import SnakeGame
 
 def TrainModel(model, x, y, FutureState):
+	#The "true" value of each state is the reward in that state plus the discounted value of all future rewards
 	q= y+GetBestAftermath(model, FutureState)
 	for i in range(args.loops): 
 		model.fit(x, y+GetBestAftermath(model, FutureState) ) 
@@ -28,10 +29,6 @@ def GetBestAftermath(Q, FutureState):
 		Aftermaths[:,i] = Q.predict(FutureState).reshape(-1) 
 	return np.max( Aftermaths, axis=1) 
 	
-x,y,FutureState=[],[],[]
-MostImportantStates = [[],[],[]]
-hunger = 99999
-
 def Positive_Integer(value):
 	if not (int(value)==float(value) and int(value)>0):
 		raise argparse.ArgumentTypeError("%s is an invalid value" % value)
@@ -52,6 +49,10 @@ print ()
 args = parser.parse_args()
 parser.print_help()
 print ()
+
+x,y,FutureState=[],[],[]
+MostImportantStates = [[],[],[]]
+hunger = 99999
 
 def PlayGames(brain, games, silent=False, save=False, hunger=99999, TurnMax=args.TurnMax):
 	global x,y,FutureState, MostImportantStates
@@ -82,6 +83,7 @@ if Px_Size<1:
 # Get the first round of data by moving randomly
 PlayGames(lambda state: np.random.randint(3), args.rGames)
 
+#Use a random forest to predict the Q of any given input state
 params = {'n_estimators':500, 'max_depth':5, 'min_samples_split': 2,
           'learning_rate': 0.01, 'loss': 'ls'}
 Q = ensemble.GradientBoostingRegressor(**params)
@@ -98,27 +100,32 @@ def MakeDecision(state):
 			Decision=i
 	return Decision
 	
-for Generation in range(args.Generations):
-	x,y,FutureState=MostImportantStates
-	MostImportantStates = [[],[],[]]
-	print ()
-	print ( "     Generation", Generation+1) 
-	PlayGames(lambda state: np.random.randint(3), args.rGames, silent=True) 
-	apples, turns, gifs = PlayGames(MakeDecision, args.Games) 
+if __name__ == "__main__":
+	for Generation in range(args.Generations):
+		#Train the model for args.Generations Generations
+		x,y,FutureState=MostImportantStates
+		MostImportantStates = [[],[],[]]
+		print ()
+		print ( "     Generation", Generation+1) 
+		PlayGames(lambda state: np.random.randint(3), args.rGames, silent=True) 
+		#Play the game to get data
+		apples, turns, gifs = PlayGames(MakeDecision, args.Games) 
 
-	if max(turns) > args.Games and hunger>args.Hunger:
-		hunger=args.Hunger
-		print ("SNAKE PERFORMING WELL.  ACTIVATING HUNGER" )
-	apples, turns, gifs = PlayGames(MakeDecision, args.Highlight*2,TurnMax=99999, save=True, silent=True, hunger=hunger) 
-	HighlightReel=[]
-	for i in tuple( np.where(np.array(apples) >= sorted(apples)[-args.Highlight]))[0] :
-		HighlightReel+=gifs[i]		
-	SnakeGame.imageio.mimsave("Generation"+ str(  Generation+1 )+".gif", HighlightReel)
-	del HighlightReel
-	del gifs
-	SnakeGame.gc.collect()
-	if Generation < args.Generations-1:
-		TrainModel(Q, np.array(x), y  , np.array(FutureState))
+		if max(turns) > args.Games and hunger>args.Hunger:
+			#Turn on hunger when the snake starts to do well.
+			hunger=args.Hunger
+			print ("SNAKE PERFORMING WELL.  ACTIVATING HUNGER" )
+			
+		apples, turns, gifs = PlayGames(MakeDecision, args.Highlight*2,TurnMax=99999, save=True, silent=True, hunger=hunger) 
+		HighlightReel=[]
+		for i in tuple( np.where(np.array(apples) >= sorted(apples)[-args.Highlight]))[0] :
+			HighlightReel+=gifs[i]		
+		SnakeGame.imageio.mimsave("Generation"+ str(  Generation+1 )+".gif", HighlightReel)
+		del HighlightReel
+		del gifs
+		SnakeGame.gc.collect()
+		if Generation < args.Generations-1:
+			TrainModel(Q, np.array(x), y  , np.array(FutureState))
 
 
 	

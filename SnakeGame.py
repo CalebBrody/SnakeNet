@@ -30,20 +30,23 @@ class Location:
 	def move(self, other):
 		self.loc +=other.loc
 		
-	def turn(self, by):
-		if by==0:
+	def turn(self, direction):
+		if direction==0:
 			pass
-		elif by==1:
-			self.loc=np.array((self.loc[1], self.loc[0]))
-		elif by==2:
+		elif direction==1:
+			# Turn Left
+			self.loc=np.array((self.loc[1], self.loc[0])) 
+		elif direction==2:
+			#Turn Right
 			self.loc=-np.array((self.loc[1], self.loc[0]))
 		else:
-			raise ValueError("cant turn by" + str(by))
+			raise ValueError("cant turn direction " + str(by))
 			
 	def copy(self):
 		return Location(self.loc[0], self.loc[1])
 		
 	def CardinalDirections(self):
+		#Return a list, oriented at self, of all Cardinal Directions 
 		dict={}
 		for i in range(3):
 			tmp=self.copy()
@@ -158,7 +161,6 @@ def DrawBoard():
 			DrawBox(i, board, [255,0,0])
 	DrawBox(game.food, board, [0,255,0])
 	
-	#board = Image.fromarray(board, 'RGB')
 	return board
 
 if __name__ == "__main__":
