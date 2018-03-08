@@ -8,6 +8,9 @@ import imageio
 from PIL import Image
 import numpy as np
 import pandas as pd
+
+#Setup global variables
+#These variables can be referenced by bother programs as SnakeGame.MapSize (more pythonic than SnakeGame.SetMapSize)
 MapSize=16
 Px_Size=int(600/MapSize)
 
